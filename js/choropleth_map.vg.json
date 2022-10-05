@@ -38,7 +38,7 @@
           "field": "VALUE",
           "type": "quantitative",
           "scale": {
-            "type": "threshold",
+            "type": "threshold", 
             "domain": [5, 10, 20, 50],
             "range": ["#ffffd4","#fed98e","#fe9929","#d95f0e","#993404"]
             }  
@@ -46,7 +46,7 @@
         "tooltip": [
           {"field": "properties.NAME", "type": "nominal", "title": "COUNTRY"},
           {"field": "VALUE", "type": "quantitative", "title": "Inflation Rate"},
-          {"field": "TIME", "type": "nominal", "title": "Time"}
+          {"field": "TIME", "type": "nominal", "title": "Time"} 
         ]
       }
     }
