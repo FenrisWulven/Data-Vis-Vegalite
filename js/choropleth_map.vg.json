@@ -1,8 +1,5 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "data": {
-    "url": "https://raw.githubusercontent.com/FenrisWulven/Data-Vis-Vegalite/master/data/inflation_clean.csv"
-  },
   "vconcat":[
     {
       "title": "Current Worldwide Inflation Rates",
@@ -15,7 +12,14 @@
             "url": "https://raw.githubusercontent.com/JiazhouLiu/FIT3179/main/VegaLite/3_choropleth_map/js/ne_110m_admin_0_countries.topojson",
             "format": {"type": "topojson", "feature": "ne_110m_admin_0_countries"}
           },
-          "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"}
+          "transform": [
+            {
+              "calculate": "'Data is not available in ' + datum.properties.NAME",
+              "as": "note"
+            }
+          ],
+          "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"},
+          "encoding": {"tooltip": {"field": "note"}}
         },
         {
           "data": {
@@ -25,30 +29,50 @@
           "mark": {"type": "geoshape", "fill": "skyblue"}
         },
         {
-        "mark": "geoshape",
-        "encoding": {
-          "color": {
-            "field": "VALUE",
-            "type": "quantitative",
-            "scale": {
-              "type": "threshold",
-              "domain": [5, 10, 20, 50],
-              "range": ["#ffffd4", "#fed98e", "#fe9929", "#d95f0e", "#993404"]
-            }
+          "data": {
+            "url": "https://raw.githubusercontent.com/FenrisWulven/Data-Vis-Vegalite/master/data/inflation_clean.csv"
           },
-          "tooltip": [
-            {"field": "properties.NAME", "type": "nominal", "title": "Country"},
-            {"field": "VALUE", "type": "quantitative", "title": "Inflation Rate"},
-            {"field": "TIME", "type": "nominal", "title": "Time"}
-          ]
+          "transform": [
+            {
+              "lookup": "COUNTRY",
+              "from": {
+                "data": {
+                  "url": "https://raw.githubusercontent.com/JiazhouLiu/FIT3179/main/VegaLite/3_choropleth_map/js/ne_110m_admin_0_countries.topojson",
+                  "format": {"type": "topojson", "feature": "ne_110m_admin_0_countries"}
+                },
+                "key": "properties.NAME"
+              },
+              "as": "geo"
+            }
+          ],
+          "mark": {"type": "geoshape", "stroke": "white"},
+          "encoding": {
+            "shape": {"field": "geo", "type": "geojson"},
+            "color": {
+              "field": "VALUE",
+              "type": "quantitative",
+              "scale": {
+                "type": "threshold",
+                "domain": [5, 10, 20, 50],
+                "range": ["#ffffd4", "#fed98e", "#fe9929", "#d95f0e", "#993404"]
+              }
+            },
+            "tooltip": [
+              {"field": "COUNTRY", "type": "nominal", "title": "Country"},
+              {"field": "VALUE", "type": "quantitative", "title": "Inflation Rate"},
+              {"field": "TIME", "type": "nominal", "title": "Time"}
+            ]
+          }
         }
-      }
       ]
     },
     {
       "title": "Current Worldwide Inflation Rates",
       "width": 400,
       "height": 200,
+      "data": {
+        "url": "https://raw.githubusercontent.com/FenrisWulven/Data-Vis-Vegalite/master/data/inflation_clean.csv"
+      },
       "transform": [
         {
           "filter": {
