@@ -168,8 +168,9 @@
             "color": {
               "value": "red"
             },
+            "size": {"value": 3},
             "tooltip": [
-              {"field": "COUNTRY", "type": "nominal", "title": "Country"},
+              {"field": "Avg. Global Inflation", "type": "nominal", "title": "Global Average", "format": ".2f"},
               {"field": "VALUE", "type": "quantitative", "title": "Inflation Rate"},
               {"field": "TIME", "type": "temporal", "title": "Time", "timeUnit": "yearmonth"}
             ]
@@ -221,7 +222,24 @@
             "x": {"field": "TIME","type": "temporal", "timeUnit": "yearmonth", "axis": {"title": "", "format": "%Y"}},
             "y": {"value": 1},
             "text": {"field": "TIME","type": "temporal","timeUnit": "yearmonth"}
-
+          }
+        },
+        {
+          "transform": [
+            {
+            "filter": {"param": "Country_selection"}
+            }
+          ], 
+          "mark": {"type": "point"},
+          "encoding": {
+            "x": {"field": "TIME","type": "temporal"},
+            "y": {"field": "VALUE","type": "quantitative"},
+            "opacity": {"value": 0},
+            "tooltip": [
+              {"field": "COUNTRY", "type": "nominal", "title": "Country"},
+              {"field": "VALUE", "type": "quantitative", "title": "Inflation Rate"},
+              {"field": "TIME", "type": "temporal", "title": "Time", "timeUnit": "yearmonth"}
+            ]
           }
         }
       ]
