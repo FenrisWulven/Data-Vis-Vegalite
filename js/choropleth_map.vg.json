@@ -4,7 +4,7 @@
     {
       "title": "Current Worldwide Inflation Rates",
       "width": 800,
-      "height": 200,
+      "height": 400,
       "projection": {"type": "equalEarth"},
       "layer": [
         {
