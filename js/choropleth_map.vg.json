@@ -1,5 +1,8 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://raw.githubusercontent.com/FenrisWulven/Data-Vis-Vegalite/master/data/inflation_clean.csv"
+  },
   "vconcat":[
     {
       "title": "Current Worldwide Inflation Rates",
@@ -29,9 +32,6 @@
           "mark": {"type": "geoshape", "fill": "skyblue"}
         },
         {
-          "data": {
-            "url": "https://raw.githubusercontent.com/FenrisWulven/Data-Vis-Vegalite/master/data/inflation_clean.csv"
-          },
           "transform": [
             {
               "lookup": "COUNTRY",
@@ -43,6 +43,9 @@
                 "key": "properties.NAME"
               },
               "as": "geo"
+            },
+            {
+              "filter": {"param": "time_brush"}
             }
           ],
           "mark": {"type": "geoshape", "stroke": "white"},
@@ -53,32 +56,54 @@
               "type": "quantitative",
               "scale": {
                 "type": "threshold",
-                "domain": [5, 10, 20, 50],
-                "range": ["#ffffd4", "#fed98e", "#fe9929", "#d95f0e", "#993404"]
+                "domain": [0,5, 10, 20, 50],
+                "range": ["#998ec3","#fdbe85", "#fd8d3c", "#e6550d","#bd0026", "#7f0000"]
               }
             },
             "tooltip": [
               {"field": "COUNTRY", "type": "nominal", "title": "Country"},
               {"field": "VALUE", "type": "quantitative", "title": "Inflation Rate"},
-              {"field": "TIME", "type": "nominal", "title": "Time"}
+              {"field": "TIME", "type": "temporal", "title": "Time", "timeUnit": "yearmonth"}
             ]
           }
         }
       ]
     },
     {
-      "title": "Current Worldwide Inflation Rates",
+      "title": "History of Worldwide Inflation Rates",
       "width": 800,
       "height": 100,
-      "data": {
-        "url": "https://raw.githubusercontent.com/FenrisWulven/Data-Vis-Vegalite/master/data/inflation_clean.csv"
-      },
+      "params": [
+        { 
+          "name": "time_brush", 
+          "select": 
+          {
+            "type": "interval","encodings": ["x"]
+          }
+        },
+        {
+          "name": "Country_selection",
+          "select": {
+            "type": "point", "fields": ["COUNTRY"]
+          },
+          "value": "United States of America",
+          "bind": {
+            "input": "select",
+            "options": [
+              "China",
+              "Germany",
+              "Russia",
+              "Turkey",
+              "United Kingdom",
+              "United States of America"
+            ],
+            "name": "Country: "
+          }
+        }       
+      ],
       "transform": [
         {
-          "filter": {
-            "field": "COUNTRY",
-            "oneOf": ["Russia", "China", "India"]
-          }
+          "filter": {"param": "Country_selection"}
         }
       ],
       "mark": "line",
@@ -86,9 +111,8 @@
         "x": {
           "field": "TIME",
           "type": "temporal",
-          "axis": {
-            "title": "Year"
-          }
+          "timeUnit": "yearmonth",
+          "axis": {"title": "", "format": "%Y"}
         },
         "y": {
           "field": "VALUE",
@@ -98,13 +122,17 @@
           }
         },
         "color": {
-          "field": "COUNTRY",
-          "type": "nominal",
-          "scale": {
-            "domain": ["Russia", "China", "India"],
-            "range": ["#1f77b4", "#ff7f0e", "#2ca02c"]
-          }
-        }
+          "condition": {
+            "param": "Country_selection",
+            "field": "COUNTRY", "type": "nominal"
+          },
+          "value": "lightgray"
+        },
+        "tooltip": [
+          {"field": "COUNTRY", "type": "nominal", "title": "Country"},
+          {"field": "VALUE", "type": "quantitative", "title": "Inflation Rate"},
+          {"field": "TIME", "type": "temporal", "title": "Time", "timeUnit": "yearmonth"}
+        ]
       }
     },
     {
@@ -113,9 +141,6 @@
           "title": "Largest 5 Inflation Rates",
           "width": 350,
           "height": 100,
-          "data": {
-            "url": "https://raw.githubusercontent.com/FenrisWulven/Data-Vis-Vegalite/master/data/inflation_clean.csv"
-          },
           "transform": [
             {
               "filter": {
@@ -175,7 +200,7 @@
               "field": "COUNTRY",
               "type": "nominal",
               "scale": {
-                "range": ["#1f77b4", "#ff7f0e", "#2ca02c"]
+                "range": ["#1f77b4"]
               }
             },
             "tooltip": [
@@ -189,9 +214,6 @@
           "title": "Smallest 5 Inflation Rates",
           "width": 350,
           "height": 100,
-          "data": {
-            "url": "https://raw.githubusercontent.com/FenrisWulven/Data-Vis-Vegalite/master/data/inflation_clean.csv"
-          },
           "transform": [
             {
               "filter": {
@@ -251,10 +273,11 @@
               "field": "COUNTRY",
               "type": "nominal",
               "scale": {
-                "range": ["#1f77b4", "#ff7f0e", "#2ca02c"]
-              }
+                "range": ["#ff7f0e", "#2ca02c"]
+              },
+              "legend": null
             },
-            "tooltip": [
+              "tooltip": [
               {"field": "COUNTRY", "type": "nominal", "title": "Country"},
               {"field": "VALUE", "type": "quantitative", "title": "Inflation Rate"},
               {"field": "TIME", "type": "nominal", "title": "Time"}
