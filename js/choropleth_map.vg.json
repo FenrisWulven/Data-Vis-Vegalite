@@ -85,9 +85,11 @@
               "bind": {
                 "input": "select",
                 "options": [
+                  "Argentina",
                   "China",
                   "Germany",
                   "Russia",
+                  "Turkey",
                   "United Kingdom",
                   "United States of America"
                 ],
@@ -187,7 +189,6 @@
           "mark": {"type": "point"},
           "encoding": {
             "x": {"field": "TIME","type": "temporal"},
-            "y": {"field": "VALUE", "type": "quantitative"},
             "opacity": {"value": 0}
           }
         },
