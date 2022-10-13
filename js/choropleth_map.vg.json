@@ -7,7 +7,7 @@
     {
       "title": "Current Worldwide Inflation Rates",
       "width": 800,
-      "height": 400,
+      "height": 380,
       "projection": {"type": "equalEarth"},
       "layer": [
         {
@@ -249,13 +249,10 @@
         {
           "title": "Largest 5 Inflation Rates",
           "width": 350,
-          "height": 100,
+          "height": 90,
           "transform": [
             {
-              "filter": {
-                "field": "TIME",
-                "equal": "2020-08"
-              }
+              "filter": {"param": "time_brush"}
             },
             {
               "filter": {
@@ -322,13 +319,10 @@
         {
           "title": "Smallest 5 Inflation Rates",
           "width": 350,
-          "height": 100,
+          "height": 90,
           "transform": [
             {
-              "filter": {
-                "field": "TIME",
-                "equal": "2020-08"
-              }
+              "filter": {"param": "time_brush"}
             },
             {
               "filter": {
