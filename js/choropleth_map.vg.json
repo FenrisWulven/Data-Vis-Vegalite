@@ -6,9 +6,9 @@
   "vconcat":[
     {
       "title": "Current Worldwide Inflation Rates",
-      "width": 800,
-      "height": 380,
-      "projection": {"type": "equalEarth"},
+      "width": 700,
+      "height": 340,
+      "projection": {"type": "equalEarth", "translate": [330, 185], "scale": 140},
       "layer": [
         {
           "data": {
@@ -71,8 +71,8 @@
     },
     {
       "title": "History of Worldwide Inflation Rates",
-      "width": 800,
-      "height": 100,
+      "width": 700,
+      "height": 120,
       "layer": [
         {
           "params": [
@@ -81,7 +81,7 @@
               "select": {
                 "type": "point", "fields": ["COUNTRY"]
               },
-              "value": "United States of America",
+              "value": "Russia",
               "bind": {
                 "input": "select",
                 "options": [
@@ -137,7 +137,7 @@
                 {
                   "op": "mean",
                   "field": "VALUE",
-                  "as": "Avg. Global Inflation"
+                  "as": "avg"
                 }
               ],
               "frame": [0, 0],
@@ -159,7 +159,7 @@
               "axis": {"title": "", "format": "%Y"}
             },
             "y": {
-              "field": "Avg. Global Inflation",
+              "field": "avg",
               "type": "quantitative",
               "axis": {
                 "title": "Inflation Rate"
@@ -168,12 +168,7 @@
             "color": {
               "value": "red"
             },
-            "size": {"value": 3},
-            "tooltip": [
-              {"field": "Avg. Global Inflation", "type": "nominal", "title": "Global Average", "format": ".2f"},
-              {"field": "VALUE", "type": "quantitative", "title": "Inflation Rate"},
-              {"field": "TIME", "type": "temporal", "title": "Time", "timeUnit": "yearmonth"}
-            ]
+            "size": {"value": 3}
           }
         },
         {
@@ -194,35 +189,67 @@
           }
         },
         {
-          "transform": [
+          "transform": [{
+              "filter": {"and": ["time_brush.TIME", {"param": "time_brush"}]}}
+          ],
+          "layer": [
             {
-              "filter": {"and": ["time_brush.TIME", {"param": "time_brush"}]}
-          }
-          ],
-          "mark": "rule",
-          "encoding": {
-            "x": {
-              "field": "TIME",
-              "type": "temporal",
-              "timeUnit": "yearmonth",
-              "axis": {"title": "", "format": "%Y"}
+              "mark": "rule",
+              "encoding": {
+                "x": {
+                  "field": "TIME",
+                  "type": "temporal",
+                  "timeUnit": "yearmonth",
+                  "axis": {"title": "", "format": "%Y"}
+                },
+                "color": {"value": "black"},
+                "size": {"value": 1}
+              }
             },
-            "color": {"value": "black"},
-            "size": {"value": 1}
-          }
-        },
-        {
-          "transform": [
-            {"filter": {
-              "and": ["time_brush.TIME", {"param": "time_brush"}]
-            }}
-          ],
-          "mark": {"type":"text", "yOffset":-8,"font": "14px Serif"},
-          "encoding": {
-            "x": {"field": "TIME","type": "temporal", "timeUnit": "yearmonth", "axis": {"title": "", "format": "%Y"}},
-            "y": {"value": 1},
-            "text": {"field": "TIME","type": "temporal","timeUnit": "yearmonth"}
-          }
+            {
+              "mark": {"type": "text","fontWeight":"normal","align": "left","fontSize": 12, 
+                "dx": {"expr": "year(datum['TIME']) > 2019 ? -56 : 7"}},
+              "encoding": {
+                "x": {"field": "TIME","type": "temporal", "timeUnit": "yearmonth", "axis": {"title": "", "format": "%Y"}},
+                "y": {"value": 10},
+                "text": {"field": "TIME","type": "temporal","timeUnit": "yearmonth"},
+                "color": {"value": "#404040"}
+              }
+            },
+            {
+              "transform": [
+                {
+                  "window": [
+                    {
+                      "op": "mean",
+                      "field": "VALUE",
+                      "as": "avg"
+                    }
+                  ],
+                  "frame": [0, 0],
+                  "ignorePeers": false,
+                  "sort": [
+                    {
+                      "field": "TIME",
+                      "order": "ascending"
+                    }
+                  ]
+                },
+                {
+                  "calculate": "'Avg. Global: ' + format(datum.avg, '.2f') + '%'",
+                  "as": "global"
+                }
+              ], 
+              "mark": {"type": "text","fontWeight":"normal","align": "left","fontSize": 12, 
+                "dx": {"expr": "year(datum['TIME']) > 2019 ? -109 : 7"}},
+              "encoding": {
+                "x": {"field": "TIME","type": "temporal", "timeUnit": "yearmonth", "axis": {"title": "", "format": "%Y"}},
+                "y": {"value": 30},
+                "text": {"field": "global"},
+                "color": {"value": "#404040"}
+              }
+            }
+          ]
         },
         {
           "transform": [
@@ -239,151 +266,6 @@
               {"field": "COUNTRY", "type": "nominal", "title": "Country"},
               {"field": "VALUE", "type": "quantitative", "title": "Inflation Rate"},
               {"field": "TIME", "type": "temporal", "title": "Time", "timeUnit": "yearmonth"}
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "hconcat": [
-        {
-          "title": "Largest 5 Inflation Rates",
-          "width": 350,
-          "height": 90,
-          "transform": [
-            {
-              "filter": {"param": "time_brush"}
-            },
-            {
-              "filter": {
-                "field": "VALUE",
-                "valid": true
-              }
-            },
-            {
-              "window": [
-                {
-                  "op": "rank",
-                  "as": "rank"
-                }
-              ],
-              "sort": [
-                {
-                  "field": "VALUE",
-                  "order": "descending"
-                }
-              ]
-            },
-            {
-              "filter": {
-                "field": "rank",
-                "lte": 5
-              }
-            }
-          ],
-          "mark": "bar",
-          "encoding": {
-            "x": {
-              "field": "VALUE",
-              "type": "quantitative",
-              "axis": {
-                "title": "Inflation rate"
-              }
-            },
-            "y": {
-              "field": "COUNTRY",
-              "type": "nominal",
-              "sort": {
-                "field": "VALUE",
-                "op": "mean",
-                "order": "descending"
-              },
-              "axis": {
-                "title": "Country"
-              }
-            },
-            "color": {
-              "field": "COUNTRY",
-              "type": "nominal",
-              "scale": {
-                "range": ["#1f77b4"]
-              }
-            },
-            "tooltip": [
-              {"field": "COUNTRY", "type": "nominal", "title": "Country"},
-              {"field": "VALUE", "type": "quantitative", "title": "Inflation Rate"},
-              {"field": "TIME", "type": "nominal", "title": "Time"}
-            ]
-          }
-        },
-        {
-          "title": "Smallest 5 Inflation Rates",
-          "width": 350,
-          "height": 90,
-          "transform": [
-            {
-              "filter": {"param": "time_brush"}
-            },
-            {
-              "filter": {
-                "field": "VALUE",
-                "valid": true
-              }
-            },
-            {
-              "window": [
-                {
-                  "op": "rank",
-                  "as": "rank"
-                }
-              ],
-              "sort": [
-                {
-                  "field": "VALUE",
-                  "order": "ascending"
-                }
-              ]
-            },
-            {
-              "filter": {
-                "field": "rank",
-                "lte": 5
-              }
-            }
-          ],
-          "mark": "bar",
-          "encoding": {
-            "x": {
-              "field": "VALUE",
-              "type": "quantitative",
-              "axis": {
-                "title": "Inflation rate"
-              }
-            },
-            "y": {
-              "field": "COUNTRY",
-              "type": "nominal",
-              "sort": {
-                "field": "VALUE",
-                "op": "mean",
-                "order": "descending"
-              },
-              "axis": {
-                "title": "Country"
-              }
-            },
-            "color": {
-              "field": "COUNTRY",
-              "type": "nominal",
-              "scale": {
-                "range": ["#ff7f0e", "#2ca02c"]
-              },
-              "legend": null
-            },
-              "tooltip": [
-              {"field": "COUNTRY", "type": "nominal", "title": "Country"},
-              {"field": "VALUE", "type": "quantitative", "title": "Inflation Rate"},
-              {"field": "TIME", "type": "nominal", "title": "Time"}
             ]
           }
         }

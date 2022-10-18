@@ -1,0 +1,143 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://raw.githubusercontent.com/FenrisWulven/Data-Vis-Vegalite/master/data/inflation_clean.csv"
+  },
+  "params": [
+    {
+      "name": "Year_selection",
+      "select": {
+        "type": "point", "fields": ["year"]
+      },
+      "value": 2020,
+      "bind": {
+        "input": "range", 
+        "min": 2010, 
+        "max": 2022, 
+        "step": 1,
+        "name": "Year: "
+      }
+    }    
+  ],
+  "transform": [
+    {
+      "calculate": "year(datum.TIME)",
+      "as": "year"
+    },
+    {
+      "calculate": "month(datum.TIME)",
+      "as": "month"
+    }
+  ],
+  "hconcat": [
+    {
+      "title": "Largest 5 Inflation Rates",
+      "width": 280,
+      "height": 100,
+      "transform": [
+        {
+          "window": [
+            {
+              "op": "rank",
+              "field": "VALUE",
+              "as": "largest"
+            }
+          ],
+          "frame": [null,null],
+          "sort": [{
+              "order": "descending"
+            }]
+        },
+        {
+          "filter": {"and": [{"param": "Year_selection"}, {"field": "VALUE", "valid": true}]}
+        }
+      ],
+      "mark": "bar",
+      "encoding": {
+        "x": {
+          "field": "VALUE",
+          "type": "quantitative",
+          "axis": {
+            "title": "Inflation rate"
+          }
+        },
+        "y": {
+          "field": "COUNTRY",
+          "type": "nominal",
+          "sort": {
+            "field": "VALUE",
+            "order": "descending"
+          },
+          "axis": {
+            "title": "Country"
+          }
+        },
+        "color": {
+          "field": "COUNTRY",
+          "type": "nominal"
+        },
+        "tooltip": [
+          {"field": "COUNTRY", "type": "nominal", "title": "Country"},
+          {"field": "VALUE", "type": "quantitative", "title": "Inflation Rate"},
+          {"field": "TIME", "type": "nominal", "title": "Time"}
+        ]
+      }
+    },
+    {
+      "title": "Smallest 5 Inflation Rates",
+      "width": 280,
+      "height": 100,
+      "transform": [
+        {
+          "window": [
+            {
+              "op": "rank",
+              "field": "VALUE",
+              "as": "smallest"
+            }
+          ],
+          "frame": [null,null],
+          "sort": [
+            {
+              "order": "ascending"
+            }
+          ]
+        },
+        {
+          "filter": {"and": [{"param": "Year_selection"}, {"field": "VALUE", "valid": true}]}
+        }
+      ],
+      "mark": "bar",
+      "encoding": {
+        "x": {
+          "field": "VALUE",
+          "type": "quantitative",
+          "axis": {
+            "title": "Inflation rate"
+          }
+        },
+        "y": {
+          "field": "COUNTRY",
+          "type": "nominal",
+          "sort": {
+            "field": "VALUE",
+            "order": "ascending"
+          },
+          "axis": {
+            "title": "Country"
+          }
+        },
+        "color": {
+          "field": "COUNTRY",
+          "type": "nominal"
+        },
+        "tooltip": [
+          {"field": "COUNTRY", "type": "nominal", "title": "Country"},
+          {"field": "VALUE", "type": "quantitative", "title": "Inflation Rate"},
+          {"field": "TIME", "type": "nominal", "title": "Time"}
+        ]
+      }
+    }
+  ]
+}
+
